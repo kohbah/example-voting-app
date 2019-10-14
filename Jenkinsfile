@@ -16,13 +16,13 @@ pipeline {
         sh 'docker build -t dockersamples/worker:latest ./worker'
       }
     }
-    stage('Deploy Image') {
-      steps{
-        script {
-        docker.withRegistry('http://10.0.1.113:8081/artifactory', 'jfrog') {
-            app.push("${env.BUILD_NUMBER}")
-            app.push("latest")
-              }
+    stage('Push result image') {
+      when {
+        branch 'master'
+      }
+      steps {
+        withDockerRegistry(credentialsId: 'jfrog', url:'http://10.0.1.113:8081/artifactory') {
+          sh 'docker push dockersamples/result:latest'
         }
       }
     }
@@ -43,9 +43,8 @@ pipeline {
       steps {
         withDockerRegistry(credentialsId: 'jfrog', url:'http://10.0.1.113:8081/artifactory') {
           sh 'docker push dockersamples/worker:latest'
-         }
-       }
-     }
-   }
- }
+        }
+      }
+    }
+  }
 }
