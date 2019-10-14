@@ -25,7 +25,7 @@ pipeline {
         branch 'master'
       }
       steps {
-        withDockerRegistry(credentialsId: 'dockerbuildbot-index.docker.io', url:'') {
+        withDockerRegistry(credentialsId: 'jfrog', url:'http://10.0.1.113:8081/artifactory') {
           sh 'docker push dockersamples/result'
         }
       }
@@ -35,7 +35,7 @@ pipeline {
         branch 'master'
       }
       steps {
-        withDockerRegistry(credentialsId: 'dockerbuildbot-index.docker.io', url:'') {
+        withDockerRegistry(credentialsId: 'jfrog', url:'http://10.0.1.113:8081/artifactory') {
           sh 'docker push dockersamples/vote'
         }
       }
@@ -45,7 +45,7 @@ pipeline {
         branch 'master'
       }
       steps {
-        withDockerRegistry(credentialsId: 'dockerbuildbot-index.docker.io', url:'') {
+        withDockerRegistry(credentialsId: 'jfrog', url:'http://10.0.1.113:8081/artifactory') {
           sh 'docker push dockersamples/worker'
         }
       }
