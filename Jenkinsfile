@@ -1,7 +1,6 @@
 pipeline {
   agent {
     node {
-      label 'ubuntu-1604-aufs-stable'
     }
   }
   stages {
