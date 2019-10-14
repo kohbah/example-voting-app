@@ -3,7 +3,7 @@ pipeline {
   stages {
     stage('Build result') {
       steps {
-        sh 'docker build -t dockersamples/result ./result'
+        sh 'docker build -t dockersamples/result:latest ./result'
       }
     } 
     stage('Build vote') {
@@ -22,7 +22,7 @@ pipeline {
       }
       steps {
         withDockerRegistry([credentialsId: 'jfrog', url:'http://10.0.1.113:8081/artifactory']) {
-          sh 'docker push dockersamples/result'
+          sh 'docker push dockersamples/result:latest'
         }
       }
     }
