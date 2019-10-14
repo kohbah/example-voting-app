@@ -17,7 +17,7 @@ pipeline {
       }
     }
     stage('Push result image') {
-       {
+           {
         branch 'master'
       }
       steps {
