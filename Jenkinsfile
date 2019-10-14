@@ -8,12 +8,12 @@ pipeline {
     } 
     stage('Build vote') {
       steps {
-        sh 'docker build -t dockersamples/vote ./vote'
+        sh 'docker build -t dockersamples/vote:latest ./vote'
       }
     }
     stage('Build worker') {
       steps {
-        sh 'docker build -t dockersamples/worker ./worker'
+        sh 'docker build -t dockersamples/worker:latest ./worker'
       }
     }
     stage('Push result image') {
@@ -21,7 +21,7 @@ pipeline {
         branch 'master'
       }
       steps {
-        withDockerRegistry([credentialsId: 'jfrog', url:'http://10.0.1.113:8081/artifactory']) {
+        withDockerRegistry(credentialsId: 'jfrog', url:'http://10.0.1.113:8081/artifactory') {
           sh 'docker push dockersamples/result:latest'
         }
       }
@@ -32,7 +32,7 @@ pipeline {
       }
       steps {
         withDockerRegistry(credentialsId: 'jfrog', url:'http://10.0.1.113:8081/artifactory') {
-          sh 'docker push dockersamples/vote'
+          sh 'docker push dockersamples/vote:latest'
         }
       }
     }
@@ -42,7 +42,7 @@ pipeline {
       }
       steps {
         withDockerRegistry(credentialsId: 'jfrog', url:'http://10.0.1.113:8081/artifactory') {
-          sh 'docker push dockersamples/worker'
+          sh 'docker push dockersamples/worker:latest'
         }
       }
     }
