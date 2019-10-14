@@ -1,50 +1,31 @@
-pipeline {
-  agent any
-  stages {
-    stage('Build result') {
-      steps {
-        sh 'docker build -t dockersamples/result:latest ./result'
+node {
+    def resultImage
+    def voteImage
+    def workerImage
+    docker.withRegistry("http://10.0.1.113:8081/artifactory", "jfrog" ) { 
+      stage('Clone repo') {
+        checkout scm
       }
-    } 
-    stage('Build vote') {
-      steps {
-        sh 'docker build -t dockersamples/vote:latest ./vote'
+      stage('Build result') {
+        resultImage = docker.build("dockersamples/result", "./result")
+      } 
+      stage('Build vote') {
+        voteImage = docker.build("dockersamples/vote", "./vote")
       }
-    }
-    stage('Build worker') {
-      steps {
-        sh 'docker build -t dockersamples/worker:latest ./worker'
+      stage('Build worker dotnet') {
+        workerImage = docker.build("dockersamples/worker", "./worker")
       }
-    }
-    stage('Push result image') {
-      when {
-        branch 'master'
+      stage('Push result image') {
+          resultImage.push("${env.BUILD_NUMBER}")
+          resultImage.push()
       }
-      steps {
-        withDockerRegistry(credentialsId: 'jfrog', url:'http://10.0.1.113:8081/artifactory') {
-          sh 'docker push dockersamples/result:latest'
-        }
+      stage('Push vote image') {
+          voteImage.push("${env.BUILD_NUMBER}")
+          voteImage.push()
       }
-    }
-    stage('Push vote image') {
-      when {
-        branch 'master'
-      }
-      steps {
-        withDockerRegistry(credentialsId: 'jfrog', url:'http://10.0.1.113:8081/artifactory') {
-          sh 'docker push dockersamples/vote:latest'
-        }
+      stage('Push worker image') {
+          workerImage.push("${env.BUILD_NUMBER}")
+          workerImage.push()
       }
     }
-    stage('Push worker image') {
-      when {
-        branch 'master'
-      }
-      steps {
-        withDockerRegistry(credentialsId: 'jfrog', url:'http://10.0.1.113:8081/artifactory') {
-          sh 'docker push dockersamples/worker:latest'
-        }
-      }
-    }
-  }
 }
